@@ -53,11 +53,15 @@ def get_velocity(a, lm, lt):
     :param lt: normalized length of tendon (series elastic element)
     :return: normalized lengthening velocity of muscle (contractile element)
     """
+    alpha = 0
     beta = 0.1 # damping coefficient (see damped model in Millard et al.)
-
     ft = force_length_tendon(lt)
     fpe = force_length_parallel(lm)
-    fl = 0  # Implement
+    fl = force_length_muscle(lm)
+
+    func = lambda  vm : (a*fl*force_velocity_muscle(vm) + fpe + beta*vm)*np.cos(alpha) - ft
+
+    return fsolve(func, 0)
     
 
 
@@ -67,6 +71,13 @@ def force_length_tendon(lt):
     :return: normalized tension produced by tendon
     """
     lts = 1
+
+    if type(lt) != np.ndarray:
+        if lt >= lts:
+            return 10*(lt - lts) + 240*((lt - lts)**2)
+        else: 
+            return 0
+    
     rt = []
     for length in lt:
         if length >= lts:
@@ -83,6 +94,13 @@ def force_length_parallel(lm):
     :return: normalized force produced by parallel elastic element
     """
     lpes = 1
+
+    if type(lm) != np.ndarray:
+        if lm >= lpes:
+            return 3*((lm - lpes)**2) / (.6 + lm - lpes)
+        else: 
+            return 0
+
     rt = []
     for length in lm:
         if length >= lpes:
@@ -241,7 +259,6 @@ def get_muscle_force_length_regression():
     return result
 
 
-
 force_length_regression = get_muscle_force_length_regression()
 force_velocity_regression = get_muscle_force_velocity_regression()
 
@@ -261,5 +278,6 @@ def force_velocity_muscle(vm):
     """
     return np.maximum(0, force_velocity_regression.eval(vm))
 
+print("roots:{}".format(get_velocity(1, 1, 1.01)))
 
 plot_curves()
