@@ -64,7 +64,6 @@ def get_velocity(a, lm, lt):
     return fsolve(func, 0)
     
 
-
 def force_length_tendon(lt):
     """
     :param lt: normalized length of tendon (series elastic element)
@@ -278,6 +277,6 @@ def force_velocity_muscle(vm):
     """
     return np.maximum(0, force_velocity_regression.eval(vm))
 
-print("roots:{}".format(get_velocity(1, 1, 1.01)))
+print("roots:{}".format(get_velocity(1.0, 1.0, 1.01)))
 
 plot_curves()
