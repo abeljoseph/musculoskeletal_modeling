@@ -55,7 +55,9 @@ def get_velocity(a, lm, lt):
     """
     beta = 0.1 # damping coefficient (see damped model in Millard et al.)
 
-    # WRITE CODE HERE TO CALCULATE VELOCITY
+    ft = force_length_tendon(lt)
+    fpe = force_length_parallel(lm)
+    fl = 0  # Implement
     
 
 
