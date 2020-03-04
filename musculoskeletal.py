@@ -227,11 +227,7 @@ def get_muscle_force_length_regression():
         data = np.array(d)
 
     peak_force = max(data[:,1])  # peak of the force-length graph
-    optimal_length = float()
-
-    for i, pt in enumerate(data):
-        if pt[1] == peak_force:
-            optimal_length = pt[0]
+    optimal_length = data[:,0][np.where(data[:,1] == peak_force)]
 
     length = data[:,0] / optimal_length
     force = data[:,1] / peak_force
