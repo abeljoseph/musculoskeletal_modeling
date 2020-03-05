@@ -87,7 +87,7 @@ def force_length_tendon(lt):
     if np.count_nonzero(rt) == 0:
         return rt
 
-    return rt / max(np.abs(rt))
+    return rt
 
 
 def force_length_parallel(lm):
@@ -113,7 +113,7 @@ def force_length_parallel(lm):
     if np.count_nonzero(rt) == 0:
         return rt
 
-    return rt / max(np.abs(rt))
+    return rt
 
 
 def plot_curves():
