@@ -230,12 +230,6 @@ def get_muscle_force_length_regression():
     normalized so that max force is ~1 and length at max force is ~1.
     The sampples were taken form the paper with WebPlotDigitizer, and
     cut-and-pasted here.
-
-    WRITE CODE HERE 1) Use WebPlotDigitizer to extract force-length points
-    from Winters et al. (2011) Figure 3C, which is on Learn. Click
-    "View Data", select all, cut, and paste below. 2) Normalize the data
-    so optimal length = 1 and peak = 1. 3) Return a Regression object that
-    uses Gaussian basis functions. 
     """
     with open('TA_active.csv') as csvfile:
         d = []
@@ -258,10 +252,6 @@ def get_muscle_force_length_regression():
     return result
 
 
-force_length_regression = get_muscle_force_length_regression()
-force_velocity_regression = get_muscle_force_velocity_regression()
-
-
 def force_length_muscle(lm):
     """
     :param lm: muscle (contracile element) length
@@ -277,6 +267,15 @@ def force_velocity_muscle(vm):
     """
     return np.maximum(0, force_velocity_regression.eval(vm))
 
-print("roots:{}".format(get_velocity(1.0, 1.0, 1.01)))
 
-plot_curves()
+if __name__ == "__main__":
+    force_length_regression = get_muscle_force_length_regression()
+    force_velocity_regression = get_muscle_force_velocity_regression()
+
+    ############## Question 1 ##############
+    plot_curves()
+    
+    ############## Question 2 ##############
+    print("\nRoots: {}".format(get_velocity(1.0, 1.0, 1.01)))
+
+    ############## Question 3 ##############
