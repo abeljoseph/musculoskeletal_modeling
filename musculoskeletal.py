@@ -55,13 +55,13 @@ def get_velocity(a, lm, lt):
     """
     alpha = 0
     beta = 0.1 # damping coefficient (see damped model in Millard et al.)
-    ft = force_length_tendon(lt)
-    fpe = force_length_parallel(lm)
-    fl = force_length_muscle(lm)
+    ft = np.array(force_length_tendon(lt))
+    fpe = np.array(force_length_parallel(lm))
+    fl = np.array(force_length_muscle(lm))
 
     func = lambda  vm : (a*fl*force_velocity_muscle(vm) + fpe + beta*vm)*np.cos(alpha) - ft
 
-    return fsolve(func, 0)
+    return fsolve(func, np.zeros(len(max(a, lm, lt))))
     
 
 def force_length_tendon(lt):
@@ -71,7 +71,7 @@ def force_length_tendon(lt):
     """
     lts = 1
 
-    if type(lt) != np.ndarray:
+    if type(lt) == float:
         if lt >= lts:
             return 10*(lt - lts) + 240*((lt - lts)**2)
         else: 
@@ -84,6 +84,9 @@ def force_length_tendon(lt):
         else: 
             rt.append(0)
     
+    if np.count_nonzero(rt) == 0:
+        return rt
+
     return rt / max(np.abs(rt))
 
 
@@ -94,7 +97,7 @@ def force_length_parallel(lm):
     """
     lpes = 1
 
-    if type(lm) != np.ndarray:
+    if type(lm) == float:
         if lm >= lpes:
             return 3*((lm - lpes)**2) / (.6 + lm - lpes)
         else: 
@@ -106,7 +109,10 @@ def force_length_parallel(lm):
             rt.append(3*((length - lpes)**2) / (.6 + length - lpes))
         else: 
             rt.append(0)
-       
+
+    if np.count_nonzero(rt) == 0:
+        return rt
+
     return rt / max(np.abs(rt))
 
 
@@ -276,6 +282,6 @@ if __name__ == "__main__":
     plot_curves()
     
     ############## Question 2 ##############
-    print("\nRoots: {}".format(get_velocity(1.0, 1.0, 1.01)))
+    print("\nVelocities: {}".format(get_velocity([1.0], [1.0], [1.01])))
 
     ############## Question 3 ##############
