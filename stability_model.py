@@ -52,8 +52,19 @@ def dynamics(x, soleus, tibialis, control):
     :param control: True if balance should be controlled
     :return: derivative of state vector
     """
+    if not control:
+        x1_dot = x[1] #x1_dot = x2
 
-    # WRITE CODE HERE TO IMPLEMENT THE MODEL
+        x2_dot = 0 #TODO
+
+        x3_dot = get_velocity(0.05, x[2], soleus_length(x[0]))
+
+        x4_dot = get_velocity(0.4, x[3], tibialis_length(x[0]))
+
+        return [x1_dot, x2_dot, x3_dot, x4_dot]
+
+    #TODO: With Control
+    return [0,0,0,0]
 
 
 def simulate(control, T):
