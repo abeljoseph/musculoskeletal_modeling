@@ -3,8 +3,10 @@ Simple model of standing postural stability, consisting of foot and body segment
 and two muscles that create moments about the ankles, tibialis anterior and soleus.
 """
 
+import math
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.constants import g
 from scipy.integrate import solve_ivp
 from musculoskeletal import HillTypeMuscle, get_velocity
 
@@ -52,14 +54,28 @@ def dynamics(x, soleus, tibialis, control):
     :param control: True if balance should be controlled
     :return: derivative of state vector
     """
+    x1, x2, x3, x4 = map(float, x)
+
     if not control:
-        x1_dot = x[1] #x1_dot = x2
+        fom_sol = 16000  # N
+        fom_tib = 2000  # N
+        mass = 75  # kg
+        i_ankle = 90  # kg*m^2
+        l_com = 1  # m
 
-        x2_dot = 0 #TODO
+        tau_s = fom_sol * soleus_length(x1) * soleus.resting_length_muscle
+        tau_ta = fom_tib * tibialis_length(x1) * tibialis.resting_length_muscle
 
-        x3_dot = get_velocity(0.05, x[2], soleus_length(x[0]))
+        f_ext = 0  # TODO - figure out what this is. There is a HillTypeMuscle.get_force for each muscle
+        d_ext = 0  # TODO - figure out what this is
 
-        x4_dot = get_velocity(0.4, x[3], tibialis_length(x[0]))
+        x1_dot = x2
+
+        x2_dot = (tau_s - tau_ta + f_ext * d_ext * math.cos(x1 - math.pi/2 + mass * g * l_com * math.sin(x1 - math.pi/2)))/i_ankle
+
+        x3_dot = get_velocity(0.05, x3, soleus_length(x1))
+
+        x4_dot = get_velocity(0.4, x4, tibialis_length(x1))
 
         return [x1_dot, x2_dot, x3_dot, x4_dot]
 
