@@ -66,12 +66,9 @@ def dynamics(x, soleus, tibialis, control):
         tau_s = fom_sol * soleus_length(x1) * soleus.resting_length_muscle
         tau_ta = fom_tib * tibialis_length(x1) * tibialis.resting_length_muscle
 
-        f_ext = 0  # TODO - figure out what this is. There is a HillTypeMuscle.get_force for each muscle
-        d_ext = 0  # TODO - figure out what this is
-
         x1_dot = x2
 
-        x2_dot = (tau_s - tau_ta + f_ext * d_ext * math.cos(x1 - math.pi/2 + mass * g * l_com * math.sin(x1 - math.pi/2)))/i_ankle
+        x2_dot = (tau_s - tau_ta + mass * g * l_com * math.sin(x1 - math.pi/2)) / i_ankle
 
         x3_dot = get_velocity(0.05, x3, soleus_length(x1))
 
@@ -126,4 +123,6 @@ def simulate(control, T):
     plt.tight_layout()
     plt.show()
 
+
+simulate(False, 5)
 
