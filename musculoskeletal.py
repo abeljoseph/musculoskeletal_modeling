@@ -5,6 +5,7 @@ import csv
 from scipy.optimize import fsolve
 from sklearn import linear_model, preprocessing
 from scipy.special import expit
+from scipy.integrate import solve_ivp
 
 
 class HillTypeMuscle:
@@ -71,7 +72,7 @@ def force_length_tendon(lt):
     """
     lts = 1
 
-    if type(lt) == float:
+    if type(lt) in [float,np.float64]:
         if lt >= lts:
             return 10*(lt - lts) + 240*((lt - lts)**2)
         else: 
@@ -97,7 +98,7 @@ def force_length_parallel(lm):
     """
     lpes = 1
 
-    if type(lm) == float:
+    if type(lm) in [float,np.float64]:
         if lm >= lpes:
             return 3*((lm - lpes)**2) / (.6 + lm - lpes)
         else: 
@@ -274,6 +275,19 @@ def force_velocity_muscle(vm):
     return np.maximum(0, force_velocity_regression.eval(vm))
 
 
+def q3_plot(time, length, force):
+    plt.subplot(2, 1, 1)
+    plt.plot(time, length, 'k')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Normalized CE Length')
+    plt.subplot(2, 1, 2)
+    plt.plot(time, force, 'k')
+    plt.xlabel('Time(s)')
+    plt.ylabel('Force')
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
     force_length_regression = get_muscle_force_length_regression()
     force_velocity_regression = get_muscle_force_velocity_regression()
@@ -285,3 +299,16 @@ if __name__ == "__main__":
     print("\nVelocities: {}".format(get_velocity([1.0], [1.0], [1.01])))
 
     ############## Question 3 ##############
+    q3_muscle = HillTypeMuscle(100, 0.3, 0.1)
+
+    def q3_isometric_contraction(t, lm):
+        a = 0 if t < 0.5 else 1
+        return get_velocity(a, lm, q3_muscle.norm_tendon_length(0.4, lm))
+    
+    q3_sol = solve_ivp(q3_isometric_contraction, [0, 2], [1], max_step=0.01)
+    
+    q3_force=[]
+    for t in q3_sol.y[0]:
+        q3_force.append(q3_muscle.get_force(0.4, t))
+
+    q3_plot(q3_sol.t, q3_sol.y[0], q3_force)
