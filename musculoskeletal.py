@@ -235,8 +235,8 @@ def get_muscle_force_length_regression():
     """
     CE force-length data samples from Winters et al. (2011) Figure 3C,
     normalized so that max force is ~1 and length at max force is ~1.
-    The sampples were taken form the paper with WebPlotDigitizer, and
-    cut-and-pasted here.
+    The samples were taken from the paper with WebPlotDigitizer, and
+    imported here from a saved csv file.
     """
     with open('TA_active.csv') as csvfile:
         d = []
@@ -312,12 +312,3 @@ if __name__ == "__main__":
         q3_force.append(q3_muscle.get_force(0.4, t))
 
     q3_plot(q3_sol.t, q3_sol.y[0], q3_force)
-
-    ############## Question 4 ##############
-
-    def q4_postural_stability(t):
-        fom_sol = 16000  # N
-        fom_tib = 2000  # N
-        mass = 75  # kg
-        i_ankle = 90  # kg*m^2
-        l_com = 1  # m
