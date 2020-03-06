@@ -1,1 +1,1 @@
-# Musculoskeletal Modeling
+# Musculoskeletal modeling
