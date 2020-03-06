@@ -312,3 +312,12 @@ if __name__ == "__main__":
         q3_force.append(q3_muscle.get_force(0.4, t))
 
     q3_plot(q3_sol.t, q3_sol.y[0], q3_force)
+
+    ############## Question 4 ##############
+
+    def q4_postural_stability(t):
+        fom_sol = 16000  # N
+        fom_tib = 2000  # N
+        mass = 75  # kg
+        i_ankle = 90  # kg*m^2
+        l_com = 1  # m
