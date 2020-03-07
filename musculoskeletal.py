@@ -62,7 +62,7 @@ def get_velocity(a, lm, lt):
 
     func = lambda  vm : (a*fl*force_velocity_muscle(vm) + fpe + beta*vm)*np.cos(alpha) - ft
 
-    return fsolve(func, np.zeros(len(max(a, lm, lt))))
+    return fsolve(func, 0)
     
 
 def force_length_tendon(lt):
