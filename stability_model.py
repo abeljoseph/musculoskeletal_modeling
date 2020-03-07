@@ -95,7 +95,7 @@ def simulate(control, T):
     def f(t, x):
         return dynamics(x, soleus, tibialis, control)
 
-    sol = solve_ivp(f, [0, T], [np.pi/2, 0, 1, 1], rtol=1e-5, atol=1e-8)
+    sol = solve_ivp(f, [0, T], [np.pi/2-.001, 0, 1, 1], rtol=1e-5, atol=1e-8)
     time = sol.t
     theta = sol.y[0,:]
     soleus_norm_length_muscle = sol.y[2,:]
