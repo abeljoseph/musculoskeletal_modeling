@@ -288,27 +288,26 @@ def q3_plot(time, length, force):
     plt.show()
 
 
-if __name__ == "__main__":
-    force_length_regression = get_muscle_force_length_regression()
-    force_velocity_regression = get_muscle_force_velocity_regression()
+force_length_regression = get_muscle_force_length_regression()
+force_velocity_regression = get_muscle_force_velocity_regression()
 
-    ############## Question 1 ##############
-    plot_curves()
-    
-    ############## Question 2 ##############
-    print("\nVelocities: {}".format(get_velocity([1.0], [1.0], [1.01])))
+############## Question 1 ##############
+plot_curves()
 
-    ############## Question 3 ##############
-    q3_muscle = HillTypeMuscle(100, 0.3, 0.1)
+############## Question 2 ##############
+print("\nVelocities: {}".format(get_velocity([1.0], [1.0], [1.01])))
 
-    def q3_isometric_contraction(t, lm):
-        a = 0 if t < 0.5 else 1
-        return get_velocity(a, lm, q3_muscle.norm_tendon_length(0.4, lm))
-    
-    q3_sol = solve_ivp(q3_isometric_contraction, [0, 2], [1], max_step=0.01)
-    
-    q3_force=[]
-    for t in q3_sol.y[0]:
-        q3_force.append(q3_muscle.get_force(0.4, t))
+############## Question 3 ##############
+q3_muscle = HillTypeMuscle(100, 0.3, 0.1)
 
-    q3_plot(q3_sol.t, q3_sol.y[0], q3_force)
+def q3_isometric_contraction(t, lm):
+    a = 0 if t < 0.5 else 1
+    return get_velocity(a, lm, q3_muscle.norm_tendon_length(0.4, lm))
+
+q3_sol = solve_ivp(q3_isometric_contraction, [0, 2], [1], max_step=0.01)
+
+q3_force=[]
+for t in q3_sol.y[0]:
+    q3_force.append(q3_muscle.get_force(0.4, t))
+
+q3_plot(q3_sol.t, q3_sol.y[0], q3_force)
