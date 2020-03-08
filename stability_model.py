@@ -3,12 +3,11 @@ Simple model of standing postural stability, consisting of foot and body segment
 and two muscles that create moments about the ankles, tibialis anterior and soleus.
 """
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.constants import g
 from scipy.integrate import solve_ivp
-from musculoskeletal import HillTypeMuscle, get_velocity
+from musculoskeletal import HillTypeMuscle, get_velocity, force_length_tendon
 
 
 def soleus_length(theta):
@@ -56,28 +55,32 @@ def dynamics(x, soleus, tibialis, control):
     """
     x1, x2, x3, x4 = map(float, x)
 
-    if not control:
-        fom_sol = 16000  # N
-        fom_tib = 2000  # N
-        mass = 75  # kg
-        i_ankle = 90  # kg*m^2
-        l_com = 1  # m
+    if control:
 
-        tau_s = fom_sol * soleus_length(x1) * soleus.resting_length_muscle
-        tau_ta = fom_tib * tibialis_length(x1) * tibialis.resting_length_muscle
+    else:
+        a_ta = 0.4
+        a_s = 0.05
 
-        x1_dot = x2
+    fom_s = soleus.f0M  # N
+    fom_ta = tibialis.f0M  # N
+    l_s_norm = soleus.norm_tendon_length(soleus_length(x1), x3)
+    l_ta_norm = tibialis.norm_tendon_length(tibialis_length(x1), x4)
+    d_s = 0.05
+    d_ta = 0.06
+    i_ankle = 90  # kg*m^2
 
-        x2_dot = (tau_s - tau_ta + mass * g * l_com * math.sin(x1 - math.pi/2)) / i_ankle
+    tau_s = fom_s * force_length_tendon(l_s_norm) * d_s
+    tau_ta = fom_ta * force_length_tendon(l_ta_norm) * d_ta
 
-        x3_dot = get_velocity(0.05, x3, soleus_length(x1))
+    x1_dot = x2
 
-        x4_dot = get_velocity(0.4, x4, tibialis_length(x1))
+    x2_dot = (tau_s - tau_ta + gravity_moment(x1)) / i_ankle
 
-        return [x1_dot, x2_dot, x3_dot, x4_dot]
+    x3_dot = get_velocity(a_s, x3, l_s_norm)
 
-    #TODO: With Control
-    return [0,0,0,0]
+    x4_dot = get_velocity(a_ta, x4, l_ta_norm)
+
+    return [x1_dot, x2_dot, x3_dot, x4_dot]
 
 
 def simulate(control, T):
@@ -124,5 +127,6 @@ def simulate(control, T):
     plt.show()
 
 
-simulate(False, 5)
-
+if __name__ == '__main__':
+    simulate(False, 5)
+    simulate(True, 10)
