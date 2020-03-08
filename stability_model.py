@@ -56,17 +56,37 @@ def dynamics(x, soleus, tibialis, control):
     x1, x2, x3, x4 = map(float, x)
 
     if control:
+        angle_diff = abs(np.pi/2 - x1)
+        if x1 > np.pi/2:
+            a_s = angle_diff - x2
+            a_ta = 10 * angle_diff + 10 * x2
+        elif x1 < np.pi/2:
+            a_s = 5 * angle_diff - 5 * x2
+            a_ta = angle_diff - x2
+        else:
+            a_s = 0
+            a_ta = 0
+        
+        if a_s > 1:
+            a_s = 1
+        elif a_s < 0:
+            a_s = 0
+
+        if a_ta > 1:
+            a_ta = 1
+        elif a_ta < 0:
+            a_ta = 0
 
     else:
-        a_ta = 0.4
-        a_s = 0.05
-
+         a_s = 0.05
+         a_ta = 0.4
+       
     fom_s = soleus.f0M  # N
     fom_ta = tibialis.f0M  # N
     l_s_norm = soleus.norm_tendon_length(soleus_length(x1), x3)
     l_ta_norm = tibialis.norm_tendon_length(tibialis_length(x1), x4)
     d_s = 0.05
-    d_ta = 0.06
+    d_ta = 0.03
     i_ankle = 90  # kg*m^2
 
     tau_s = fom_s * force_length_tendon(l_s_norm) * d_s
@@ -128,5 +148,8 @@ def simulate(control, T):
 
 
 if __name__ == '__main__':
+    ############## Question 4 ##############
     simulate(False, 5)
+
+    ############## Question 5 ##############
     simulate(True, 10)
