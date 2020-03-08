@@ -59,10 +59,10 @@ def dynamics(x, soleus, tibialis, control):
         angle_diff = abs(np.pi/2 - x1)
         if x1 > np.pi/2:
             a_s = angle_diff - x2
-            a_ta = 10 * angle_diff + 10 * x2
-        elif x1 < np.pi/2:
-            a_s = 5 * angle_diff - 5 * x2
             a_ta = angle_diff - x2
+        elif x1 < np.pi/2:
+            a_s = 10 * angle_diff - 10 * x2
+            a_ta = 0
         else:
             a_s = 0
             a_ta = 0
@@ -149,7 +149,7 @@ def simulate(control, T):
 
 if __name__ == '__main__':
     ############## Question 4 ##############
-    simulate(False, 5)
+    # simulate(False, 5)
 
     ############## Question 5 ##############
     simulate(True, 10)
