@@ -149,7 +149,7 @@ def simulate(control, T):
 
 if __name__ == '__main__':
     ############## Question 4 ##############
-    # simulate(False, 5)
+    simulate(False, 5)
 
     ############## Question 5 ##############
     simulate(True, 10)
